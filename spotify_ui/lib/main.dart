@@ -26,15 +26,22 @@ class SpotifyHomePage extends StatelessWidget {
       backgroundColor: Colors.black,
       body: Column(
         children: [
+          TopBar(),
           Expanded(
             child: Row(
-              children: const [
-                Sidebar(),
-                Expanded(child: MainContent()),
+              children: [
+                const Sidebar(),
+                Expanded(
+                  child: Column(
+                    children: const [
+                      Expanded(child: MainContent()),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
-          MiniPlayer(),
+          const MiniPlayer(),
         ],
       ),
     );
@@ -54,9 +61,10 @@ class Sidebar extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
-          SidebarItem(icon: Icons.home, label: 'Home'),
-          SidebarItem(icon: Icons.search, label: 'Search'),
           SidebarItem(icon: Icons.library_music, label: 'Library'),
+          Expanded( 
+            child: VerticalAlbumList(),
+          )
         ],
       ),
     );
@@ -83,26 +91,32 @@ class MainContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scrollbar( // Adds a scrollbar for desktop visibility
-      thumbVisibility: true,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            SectionTitle('Recently Played'),
-            HorizontalAlbumList(),
-            SectionTitle('Made for You'),
-            HorizontalAlbumList(),
-            SectionTitle('New Releases'),
-            HorizontalAlbumList(),
-            SectionTitle('Top Picks'),
-            HorizontalAlbumList(),
-            SectionTitle('Podcasts'),
-            HorizontalAlbumList(),
-          ],
+    return Column(
+      children: [
+        Expanded(
+          child: Scrollbar(
+            thumbVisibility: true,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  SectionTitle('Recently Played'),
+                  HorizontalAlbumList(),
+                  SectionTitle('Made for You'),
+                  HorizontalAlbumList(),
+                  SectionTitle('New Releases'),
+                  HorizontalAlbumList(),
+                  SectionTitle('Top Picks'),
+                  HorizontalAlbumList(),
+                  SectionTitle('Podcasts'),
+                  HorizontalAlbumList(),
+                ],
+              ),
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }
@@ -191,6 +205,107 @@ class HorizontalAlbumList extends StatelessWidget {
     );
   }
 }
+
+class VerticalAlbumList extends StatelessWidget {
+  const VerticalAlbumList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      itemCount: 8,
+      itemBuilder: (context, index) {
+        return ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          leading: Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.grey[800],
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: const Icon(Icons.music_note, color: Colors.white),
+          ),
+          title: Text(
+            'Playlist $index',
+            style: const TextStyle(color: Colors.white, fontSize: 16),
+          ),
+          subtitle: const Text(
+            'Artist · Playlist',
+            style: TextStyle(color: Colors.grey, fontSize: 12),
+          ),
+          onTap: () {
+            // Do something on click
+          },
+        );
+      },
+    );
+  }
+}
+
+class TopBar extends StatelessWidget {
+  const TopBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      color: Colors.black87,
+      child: Row(
+        children: [
+          const Spacer(), // Push content to the center
+
+          // 🌟 Centered Home + Search
+          Center(
+            child: SizedBox(
+              width: 460, // Total width for Home + Search
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.home, color: Colors.white),
+                    onPressed: () {
+                      // Handle Home click
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Container(
+                      height: 40,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[800],
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        children: const [
+                          Icon(Icons.search, color: Colors.white54),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: TextField(
+                              style: TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                hintText: 'Search...',
+                                hintStyle: TextStyle(color: Colors.white54),
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const Spacer(), // Push content to the center from right too
+        ],
+      ),
+    );
+  }
+}
+
 
 
 
